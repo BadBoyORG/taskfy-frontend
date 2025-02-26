@@ -1,31 +1,56 @@
-<div class="login-container">
-  <h2>Login</h2>
-  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-    <div class="form-group">
-      <label for="username">Usuário</label>
-      <input
-        type="text"
-        id="username"
-        name="username"
-        [(ngModel)]="username"
-        required
-        placeholder="Digite seu usuário"
-      />
+<main class="container">
+  <div class="box">
+    <div class="login-container">
+      <h1 class="title">Login</h1>
+      <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+        <div class="form-group">
+          <label for="username">Usuário</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            [(ngModel)]="username"
+            required
+            placeholder="Digite seu usuário"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Senha</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            [(ngModel)]="password"
+            required
+            placeholder="Digite sua senha"
+          />
+        </div>
+        <button type="submit" [disabled]="loginForm.invalid || isLoading">
+          @if (isLoading) {
+          <span class="spinner"></span>
+          } @else {
+          <span>Entrar</span>
+          }
+        </button>
+      </form>
+      @if (errorMessages && errorMessages.length) {
+      <div class="error-message">
+        @for (msg of errorMessages; track $index) {
+        <p>{{ msg }}</p>
+        }
+      </div>
+      }
     </div>
-    <div class="form-group">
-      <label for="password">Senha</label>
-      <input
-        type="password"
-        id="password"
-        name="password"
-        [(ngModel)]="password"
-        required
-        placeholder="Digite sua senha"
-      />
-    </div>
-    <button type="submit" [disabled]="loginForm.invalid">Entrar</button>
-  </form>
-  <div class="error-message" *ngIf="errorMessage">
-    {{ errorMessage }}
   </div>
-</div>
+  <div class="side-container">
+    <h2 class="side-title">
+      A <span class="special">chave</span> para a produtividade está aqui:
+      <span class="normal">Faça login</span>
+    </h2>
+    <img
+      class="side-image"
+      src="assets/undraw_login.svg"
+      alt="ilustração de alguém entrando por uma porta"
+    />
+  </div>
+</main>
