@@ -33,6 +33,10 @@
           }
         </button>
       </form>
+      <p class="register">
+        Não possuí uma conta ainda?
+        <a class="register-link" href="/signup">Registre-se</a>
+      </p>
       @if (errorMessages && errorMessages.length) {
       <div class="error-message">
         @for (msg of errorMessages; track $index) {

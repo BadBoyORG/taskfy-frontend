@@ -1,7 +1,11 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { CookieService } from 'ngx-cookie-service';
@@ -45,7 +49,10 @@ export class AuthService {
       .pipe(
         tap((response) => {
           this.cookieService.set(this.tokenKey, response.accessToken, {
+            expires: 1,
             path: '/',
+            secure: true,
+            sameSite: 'Strict',
           });
           this.isLoggedInSubject.next(true);
         }),
@@ -62,7 +69,10 @@ export class AuthService {
       .pipe(
         tap((response) => {
           this.cookieService.set(this.tokenKey, response.accessToken, {
+            expires: 1,
             path: '/',
+            secure: true,
+            sameSite: 'Strict',
           });
           this.isLoggedInSubject.next(true);
         }),
@@ -79,6 +89,23 @@ export class AuthService {
       }),
       catchError(this.handleError)
     );
+  }
+
+  validateToken(): Observable<boolean> {
+    const token = this.cookieService.get(this.tokenKey);
+
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+
+    return this.http
+      .post<{ valid: true }>(`${this.apiUrl}/auth/validate-token`, undefined, {
+        headers,
+      })
+      .pipe(
+        map((response) => response.valid),
+        catchError(() => of(false))
+      );
   }
 
   private handleError(error: HttpErrorResponse) {
